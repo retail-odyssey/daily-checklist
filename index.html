@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <title>Kompass Lead Daily Checklist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 95%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                max-width: 100%;
+                border-radius: 10px;
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .header-row-1,
+        .header-row-2,
+        .header-row-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .header-row-3 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .header-signature {
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: left;
+        }
+
+        .signature-label {
+            font-weight: 600;
+            font-size: 0.95em;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .signature-canvas {
+            border: 2px solid white;
+            border-radius: 8px;
+            background: white;
+            cursor: crosshair;
+            display: block;
+            width: 100%;
+            height: 120px;
+            touch-action: none;
+        }
+
+        .btn-clear-sig {
+            margin-top: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .btn-clear-sig:hover {
+            background: white;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            text-align: left;
+        }
+
+        .input-group label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: white;
+        }
+
+        .header-info input {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9em;
+            width: 100%;
+        }
+
+        .progress-bar-container {
+            background: rgba(255, 255, 255, 0.2);
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #56ab2f 0%, #a8e063 100%);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            min-width: 0;
+            white-space: nowrap;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+            transition: opacity 0.2s ease;
+        }
+
+        .section-header:hover {
+            opacity: 0.9;
+        }
+
+        .section-header:active {
+            opacity: 0.8;
+        }
+
+        .section-content {
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        .checklist-item {
+            background: white;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .checklist-item.completed {
+            border-left-color: #56ab2f;
+            opacity: 0.7;
+        }
+
+        .item-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .checkbox-wrapper {
+            flex-shrink: 0;
+            padding-top: 2px;
+        }
+
+        input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #667eea;
+            flex-shrink: 0;
+        }
+
+        .item-content {
+            flex-grow: 1;
+        }
+
+        .item-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .item-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .item-description ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        .item-description li {
+            margin-bottom: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .notes-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff3cd;
+            border-radius: 10px;
+            border: 2px solid #ffc107;
+        }
+
+        .notes-section h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .notes-section textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 0.95em;
+            resize: vertical;
+        }
+
+        .email-list {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .email-list h4 {
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+
+        .email-list ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .email-list li {
+            color: #0d47a1;
+            padding: 3px 0;
+        }
+
+        .collapse-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .collapsed .collapse-icon {
+            transform: rotate(-90deg);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px 5px;
+            }
+
+            .container {
+                border-radius: 10px;
+                max-width: 100%;
+            }
+
+            .header {
+                padding: 15px 12px;
+            }
+
+            .header h1 {
+                font-size: 1.3em;
+                margin-bottom: 12px;
+            }
+
+            .header-row-1,
+            .header-row-2,
+            .header-row-3 {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+
+            .header-signature {
+                margin: 15px 0;
+            }
+
+            .signature-canvas {
+                height: 150px;
+            }
+
+            .btn-clear-sig {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .input-group label {
+                font-size: 0.8em;
+                margin-bottom: 3px;
+            }
+
+            .header-info input,
+            .input-group input {
+                padding: 10px;
+                font-size: 1em;
+                width: 100%;
+            }
+
+            .progress-bar-container {
+                margin-top: 15px;
+                height: 25px;
+            }
+
+            .progress-bar {
+                font-size: 0.9em;
+            }
+
+            .content {
+                padding: 15px 12px;
+            }
+
+            .section {
+                margin-bottom: 20px;
+            }
+
+            .section-header {
+                padding: 12px 15px;
+                font-size: 1.1em;
+            }
+
+            .section-content {
+                padding: 15px 12px;
+            }
+
+            .checklist-item {
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+
+            .item-header {
+                gap: 12px;
+            }
+
+            input[type="checkbox"] {
+                width: 22px;
+                height: 22px;
+                flex-shrink: 0;
+            }
+
+            .item-title {
+                font-size: 1em;
+                margin-bottom: 8px;
+                line-height: 1.3;
+            }
+
+            .item-description {
+                font-size: 0.9em;
+                line-height: 1.5;
+            }
+
+            .item-description ul {
+                margin-left: 18px;
+                margin-top: 8px;
+            }
+
+            .item-description li {
+                margin-bottom: 6px;
+            }
+
+            .notes-section {
+                padding: 15px;
+                margin-top: 20px;
+            }
+
+            .notes-section h3 {
+                font-size: 1em;
+                margin-bottom: 10px;
+            }
+
+            .notes-section textarea {
+                min-height: 120px;
+                padding: 12px;
+                font-size: 1em;
+            }
+
+            .email-list {
+                padding: 12px;
+            }
+
+            .email-list h4 {
+                font-size: 0.95em;
+            }
+
+            .email-list li {
+                font-size: 0.85em;
+                padding: 4px 0;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 15px 20px;
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+
+            .header {
+                padding: 12px 10px;
+            }
+
+            .header h1 {
+                font-size: 1.1em;
+                margin-bottom: 10px;
+            }
+
+            .content {
+                padding: 12px 10px;
+            }
+
+            .section-header {
+                padding: 10px 12px;
+                font-size: 1em;
+            }
+
+            .item-title {
+                font-size: 0.95em;
+            }
+
+            .item-description {
+                font-size: 0.85em;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                max-width: 100%;
+                margin: 0;
+            }
+            
+            .header {
+                background: #667eea !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                page-break-after: avoid;
+                padding: 10px 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.2em;
+                margin-bottom: 8px;
+            }
+            
+            .header-row-1,
+            .header-row-2,
+            .header-row-3 {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+                margin-bottom: 8px;
+            }
+
+            .header-row-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header-signature {
+                margin: 10px auto;
+                max-width: 100%;
+            }
+
+            .signature-label {
+                font-size: 0.8em;
+                margin-bottom: 4px;
+            }
+
+            .signature-canvas {
+                height: 80px;
+                border: 2px solid white;
+            }
+
+            .btn-clear-sig {
+                display: none;
+            }
+            
+            .input-group {
+                gap: 1px;
+            }
+            
+            .input-group label {
+                font-size: 0.65em;
+                line-height: 1.1;
+            }
+            
+            .input-group input {
+                padding: 2px 4px;
+                font-size: 0.75em;
+            }
+            
+            .progress-bar-container {
+                height: 15px;
+                margin-top: 8px;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .progress-bar {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                font-size: 0.7em;
+            }
+            
+            .content {
+                padding: 8px 12px;
+            }
+            
+            .section {
+                page-break-inside: avoid;
+                break-inside: avoid;
+                margin-bottom: 8px;
+            }
+            
+            .section:first-of-type {
+                page-break-before: always;
+            }
+            
+            .section:nth-of-type(2) {
+                page-break-before: always;
+            }
+            
+            .section:nth-of-type(3) {
+                page-break-before: always;
+            }
+            
+            .section-header {
+                background: #667eea !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                padding: 5px 8px;
+                font-size: 0.9em;
+            }
+            
+            .section-content {
+                padding: 6px 8px;
+            }
+            
+            .checklist-item {
+                page-break-inside: avoid;
+                break-inside: avoid;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin-bottom: 5px;
+                padding: 5px;
+            }
+            
+            .item-title {
+                font-size: 0.8em;
+                margin-bottom: 2px;
+            }
+            
+            .item-description {
+                font-size: 0.7em;
+                line-height: 1.25;
+            }
+            
+            .item-description ul {
+                margin-top: 2px;
+                margin-bottom: 2px;
+            }
+            
+            .item-description li {
+                margin-bottom: 1px;
+            }
+            
+            .button-group {
+                display: none;
+            }
+            
+            .notes-section {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                page-break-inside: avoid;
+                padding: 6px 8px;
+                margin-top: 0;
+                page-break-before: always;
+            }
+            
+            .notes-section h3 {
+                font-size: 0.85em;
+                margin-bottom: 4px;
+            }
+            
+            .notes-section textarea {
+                min-height: 40px;
+                padding: 4px;
+                font-size: 0.75em;
+            }
+            
+            .email-list {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                padding: 5px;
+                margin-top: 4px;
+            }
+            
+            .email-list h4 {
+                font-size: 0.75em;
+                margin-bottom: 2px;
+            }
+            
+            .email-list li {
+                font-size: 0.7em;
+                padding: 0px;
+            }
+            
+            input[type="checkbox"] {
+                width: 12px;
+                height: 12px;
+            }
+            
+            @page {
+                size: letter;
+                margin: 0.4in 0.5in;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .container {
+                border-radius: 0;
+                min-height: 100vh;
+            }
+
+            .header {
+                padding: 20px 15px;
+                border-radius: 0;
+            }
+
+            .header h1 {
+                font-size: 1.4em;
+            }
+
+            .header-info {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .input-group label {
+                font-size: 0.9em;
+            }
+
+            .header-info input {
+                padding: 12px;
+                font-size: 1em;
+                width: 100%;
+            }
+
+            .progress-bar-container {
+                margin-top: 15px;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .section {
+                margin-bottom: 20px;
+            }
+
+            .section-header {
+                padding: 12px 15px;
+                font-size: 1.1em;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .section-content {
+                padding: 15px;
+            }
+
+            .checklist-item {
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+
+            .item-title {
+                font-size: 1em;
+                margin-bottom: 8px;
+            }
+
+            .item-description {
+                font-size: 0.9em;
+                line-height: 1.6;
+            }
+
+            input[type="checkbox"] {
+                width: 22px;
+                height: 22px;
+                min-width: 22px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 14px 20px;
+                font-size: 1.05em;
+            }
+
+            .notes-section {
+                padding: 15px;
+            }
+
+            .notes-section textarea {
+                min-height: 120px;
+                font-size: 1em;
+                padding: 12px;
+            }
+
+            .email-list {
+                padding: 12px;
+            }
+
+            .email-list li {
+                font-size: 0.85em;
+                word-break: break-all;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.2em;
+                line-height: 1.3;
+            }
+
+            .header-info input {
+                padding: 10px;
+                font-size: 0.95em;
+            }
+
+            .section-header {
+                font-size: 1em;
+                padding: 10px 12px;
+            }
+
+            .item-title {
+                font-size: 0.95em;
+            }
+
+            .item-description {
+                font-size: 0.85em;
+            }
+
+            .btn {
+                padding: 12px 16px;
+                font-size: 1em;
+            }
+        }
+
+        /* Ensure inputs are touch-friendly on mobile */
+        @media (hover: none) and (pointer: coarse) {
+            input, textarea, button {
+                font-size: 16px !important; /* Prevents zoom on iOS */
+            }
+
+            input[type="checkbox"] {
+                width: 24px;
+                height: 24px;
+                min-width: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>KOMPASS LEAD DAILY CHECKLIST</h1>
+            
+            <!-- Row 1: Store, Date, Lead Name -->
+            <div class="header-row-1">
+                <div class="input-group">
+                    <label>Store #:</label>
+                    <input type="text" id="storeNumber" placeholder="Enter store number">
+                </div>
+                <div class="input-group">
+                    <label>Date:</label>
+                    <input type="date" id="date">
+                </div>
+                <div class="input-group">
+                    <label>Lead Name:</label>
+                    <input type="text" id="leadName" placeholder="Enter your name">
+                </div>
+            </div>
+
+            <!-- Row 2: Times -->
+            <div class="header-row-2">
+                <div class="input-group">
+                    <label>Lead Arrived at Store:</label>
+                    <input type="time" id="arrivedTime">
+                </div>
+                <div class="input-group">
+                    <label>Team Arrival Time:</label>
+                    <input type="time" id="crewArrival">
+                </div>
+                <div class="input-group">
+                    <label>Check-Out Time:</label>
+                    <input type="time" id="checkoutTime">
+                </div>
+            </div>
+
+            <!-- Row 3: Managers -->
+            <div class="header-row-3">
+                <div class="input-group">
+                    <label>Manager Checked In With:</label>
+                    <input type="text" id="groceryManager" placeholder="Manager's name">
+                </div>
+                <div class="input-group">
+                    <label>Manager Checked Out With:</label>
+                    <input type="text" id="checkoutManager" placeholder="Manager's name">
+                </div>
+            </div>
+
+            <!-- Signature -->
+            <div class="header-signature">
+                <label class="signature-label">Lead Signature:</label>
+                <canvas id="signatureCanvas" class="signature-canvas"></canvas>
+                <button class="btn-clear-sig" onclick="clearSignature()">Clear Signature</button>
+            </div>
+
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar" style="width: 0%;">0%</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Section 1: Pre-Work Setup -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>PRE-WORK SETUP</span>
+                    <span class="collapse-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="checklist-item" data-id="item-0">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">1.0 Download & "Fax" Print Weekly Materials</div>
+                                <div class="item-description">
+                                    <ul>
+                                        <li>Download Kompass Notes, Sign-off Sheets, EOD Cover Sheet, and other materials</li>
+                                        <li>Email to: <strong>tyson.gauthier@retailodyssey.com</strong></li>
+                                        <li>Subject Line: <strong>#StoreNumber</strong> (e.g., #163)</li>
+                                        <li>Attach documents and hit send</li>
+                                        <li>You'll receive a confirmation email when it's time to pick them up at the customer service desk</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-1">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">1.1 Access the "Dump Bin"</div>
+                                <div class="item-description">
+                                    Your information hub for everything Kompass-related:
+                                    <ul>
+                                        <li>Navigate to your period/week folder</li>
+                                        <li>Review "Considerations" and "Test Set Notes"</li>
+                                        <li>Review "Inventory Schedule" and "Strip Installation" dates for awareness</li>
+                                        <li>Review "Final Kompass Notes" (deleted items, new items, UPC changes, set instructions)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-2">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">1.3 Arrive Early</div>
+                                <div class="item-description">
+                                    <ul>
+                                        <li>Arrive at the store at least 1 hour before the team</li>
+                                        <li>Get organized and review the day's plan</li>
+                                        <li>Take a "before" photo of the Kompass cart (Maintenance section)</li>
+                                        <li>Check in with and record the grocery manager's name</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-3">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">1.4 Locate the Kompass Box (Vestcom Box)</div>
+                                <div class="item-description">
+                                    <ul>
+                                        <li>White box with blue lettering containing label strips</li>
+                                        <li>Check: price change room, office, Kompass cart, receiver's desk</li>
+                                        <li>If missing: Use "Vestcom Box Tracking" file in dump bin</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-4">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">1.5 Organize the Strips & Planograms</div>
+                                <div class="item-description">
+                                    <ul>
+                                        <li>Arrange strips and planograms on check stand or preferred area</li>
+                                        <li>Speak with head cashier (red vest) about using the space and when you should be prepared to move</li>
+                                        <li>Separate and include the UPLs/price tags</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-5">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">1.6 Sync Your Tablet Frequently</div>
+                                <div class="item-description">
+                                    Resync after completing major tasks, surveys, and uploading pictures
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: During Work -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>DURING WORK</span>
+                    <span class="collapse-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="checklist-item" data-id="item-6">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">2.1 Plan the Day Strategically</div>
+                                <div class="item-description">
+                                    <ul>
+                                        <li>Identify large/time-intensive sets from Kompass Notes</li>
+                                        <li>Contact department heads for coordination</li>
+                                        <li>Ask about preferred days/timing (non-load days)</li>
+                                        <li><strong>Complete priority and fuel sets first and close them out by 9 AM</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-7">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">2.2 Coordinate with Vendors</div>
+                                <div class="item-description">
+                                    Notify vendor reps in advance (Coke, Pepsi, Dr. Pepper, Columbia/Frito Lay, Tim's, Mission, etc.)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-8">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">2.3 Maintain Professional Relationships</div>
+                                <div class="item-description">
+                                    Adjust approach for each store, build positive relationships with staff
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-9">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">2.4 Assign Sets Fairly</div>
+                                <div class="item-description">
+                                    <ul>
+                                        <li>Consider experience level, aptitude, and strengths</li>
+                                        <li>Avoid favoritism - don't repeatedly assign difficult sets to same person</li>
+                                        <li>Assign based on ability, not preference</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-10">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">2.5 Manage Crew Workflow</div>
+                                <div class="item-description">
+                                    <ul>
+                                        <li>Limit to 2 people per 12 feet of set</li>
+                                        <li>Track participation: Use 1st page of Kompass Notes</li>
+                                        <li>Have each person/group initial with start and finish times</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-11">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">2.6 Handle Surveys Early</div>
+                                <div class="item-description">
+                                    Complete required surveys on the first morning of each store visit
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-12">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">2.7 Take "Before" and "After" Photos in PROD</div>
+                                <div class="item-description">
+                                    <strong>Before photos:</strong> Immediately after assigning first sets<br>
+                                    <strong>After photos:</strong> Immediately after each set is fully complete:
+                                    <ul>
+                                        <li>All strips in, shelves adjusted, tags hung, new items placed</li>
+                                        <li>"Overstock" and "Not in Set" items labeled and organized</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-13">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">2.8 "After" Photos with Store Intelligence</div>
+                                <div class="item-description">
+                                    After photos - Immediately after each set is fully complete:
+                                    <ul>
+                                        <li>Bay by bay for each set take a photo</li>
+                                        <li>Clear exceptions through the actions section</li>
+                                        <li>Ensure all sets completed in PROD are completed in Store Intelligence</li>
+                                        <li><strong>This needs to be done prior to your leaving the store</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: End of Day -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>END OF DAY</span>
+                    <span class="collapse-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="checklist-item" data-id="item-14">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">3.1 Sign-Off and Documentation</div>
+                                <div class="item-description">
+                                    <ul>
+                                        <li>Get department lead signatures on sign-off sheets</li>
+                                        <li>Take clear, in-focus photos: Sign-off sheets and Kompass cart after photo in Maintenance Category</li>
+                                        <li>Fill Out the EOD Cover Sheet and Include picture with EOD Email</li>
+                                        <li>Include: Your name, date, store number, check in/out manager names, hotline calls, PROD/SI status, confirming Kompass cart photos, issues and resolutions</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-15">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">3.2 Final Quality Check</div>
+                                <div class="item-description">
+                                    Verify all pictures are clear, well-lit, in focus, and properly attached
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-16">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">3.3 Compose the EOD Email</div>
+                                <div class="item-description">
+                                    <ul>
+                                        <li><strong>To:</strong> Fred Meyer PIC + store management</li>
+                                        <li><strong>CC:</strong> See email list below</li>
+                                        <li><strong>Subject:</strong> EOD FM#'## MM/DD/YYYY</li>
+                                        <li><strong>Attachments:</strong> Sign-off sheets, EOD Cover Sheet, photos</li>
+                                    </ul>
+                                    <div class="email-list">
+                                        <h4>EOD Email CC List:</h4>
+                                        <ul>
+                                            <li>mashabranner@retailodyssey.com</li>
+                                            <li>seth.newman@retailodyssey.com</li>
+                                            <li>knix@retailodyssey.com</li>
+                                            <li>yoursupervisor@retailodyssey.com</li>
+                                            <li>yourself@retailodyssey.com</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-17">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">3.4 Final Time Requirements</div>
+                                <div class="item-description">
+                                    <strong>Ensure that:</strong>
+                                    <ul>
+                                        <li>All work is completed by <strong>2:30 PM</strong></li>
+                                        <li>EOD emails sent by <strong>3:00 PM</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes Section -->
+            <div class="notes-section">
+                <h3>NOTES & ISSUES:</h3>
+                <textarea id="notes" placeholder="Enter any notes, issues, or observations here..."></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="saveProgress(event)">Save to Device</button>
+                <button class="btn btn-secondary" onclick="resetChecklist()">Reset Checklist</button>
+                <button class="btn btn-secondary" onclick="window.print()">Print to PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date by default
+        document.getElementById('date').valueAsDate = new Date();
+
+        // Load saved data on page load
+        window.onload = function() {
+            loadProgress();
+            updateProgress();
+        };
+
+        function toggleSection(header) {
+            const section = header.parentElement;
+            const content = section.querySelector('.section-content');
+            section.classList.toggle('collapsed');
+            
+            if (section.classList.contains('collapsed')) {
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+            }
+        }
+
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+            const checked = document.querySelectorAll('.checklist-item input[type="checkbox"]:checked');
+            const percentage = Math.round((checked.length / checkboxes.length) * 100);
+            
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = percentage + '%';
+
+            // Update completed styling
+            checkboxes.forEach(checkbox => {
+                const item = checkbox.closest('.checklist-item');
+                if (checkbox.checked) {
+                    item.classList.add('completed');
+                } else {
+                    item.classList.remove('completed');
+                }
+            });
+
+            // Auto-save when checking/unchecking
+            autoSave();
+        }
+
+        function autoSave() {
+            const data = {
+                storeNumber: document.getElementById('storeNumber').value,
+                date: document.getElementById('date').value,
+                leadName: document.getElementById('leadName').value,
+                arrivedTime: document.getElementById('arrivedTime').value,
+                groceryManager: document.getElementById('groceryManager').value,
+                crewArrival: document.getElementById('crewArrival').value,
+                notes: document.getElementById('notes').value,
+                checkoutManager: document.getElementById('checkoutManager').value,
+                checkoutTime: document.getElementById('checkoutTime').value,
+                signature: canvas.toDataURL(),
+                checkedItems: []
+            };
+
+            // Save checkbox states
+            document.querySelectorAll('.checklist-item input[type="checkbox"]').forEach((checkbox, index) => {
+                data.checkedItems.push(checkbox.checked);
+            });
+
+            localStorage.setItem('kompassChecklist', JSON.stringify(data));
+        }
+
+        function saveProgress(event) {
+            autoSave();
+            
+            // Show confirmation
+            if (event && event.target) {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Saved to Device Memory!';
+                btn.style.background = 'linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('kompassChecklist');
+            if (saved) {
+                const data = JSON.parse(saved);
+                
+                document.getElementById('storeNumber').value = data.storeNumber || '';
+                document.getElementById('date').value = data.date || new Date().toISOString().split('T')[0];
+                document.getElementById('leadName').value = data.leadName || '';
+                document.getElementById('arrivedTime').value = data.arrivedTime || '';
+                document.getElementById('groceryManager').value = data.groceryManager || '';
+                document.getElementById('crewArrival').value = data.crewArrival || '';
+                document.getElementById('notes').value = data.notes || '';
+                document.getElementById('checkoutManager').value = data.checkoutManager || '';
+                document.getElementById('checkoutTime').value = data.checkoutTime || '';
+
+                // Restore signature
+                if (data.signature) {
+                    const img = new Image();
+                    img.onload = function() {
+                        ctx.drawImage(img, 0, 0);
+                    };
+                    img.src = data.signature;
+                }
+
+                // Restore checkbox states
+                if (data.checkedItems) {
+                    document.querySelectorAll('.checklist-item input[type="checkbox"]').forEach((checkbox, index) => {
+                        if (data.checkedItems[index]) {
+                            checkbox.checked = true;
+                        }
+                    });
+                }
+            }
+        }
+
+        function resetChecklist() {
+            if (confirm('Are you sure you want to reset the checklist? This will clear all progress.')) {
+                localStorage.removeItem('kompassChecklist');
+                
+                // Reset all fields
+                document.getElementById('storeNumber').value = '';
+                document.getElementById('date').valueAsDate = new Date();
+                document.getElementById('leadName').value = '';
+                document.getElementById('arrivedTime').value = '';
+                document.getElementById('groceryManager').value = '';
+                document.getElementById('crewArrival').value = '';
+                document.getElementById('notes').value = '';
+                document.getElementById('checkoutManager').value = '';
+                document.getElementById('checkoutTime').value = '';
+                
+                // Clear signature
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Uncheck all checkboxes
+                document.querySelectorAll('.checklist-item input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                updateProgress();
+            }
+        }
+
+        // Auto-save form fields
+        document.querySelectorAll('#storeNumber, #date, #leadName, #arrivedTime, #groceryManager, #crewArrival, #notes, #checkoutManager, #checkoutTime').forEach(input => {
+            input.addEventListener('change', autoSave);
+            input.addEventListener('blur', autoSave);
+        });
+
+        // Signature Pad functionality
+        const canvas = document.getElementById('signatureCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Set canvas size
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            
+            // Redraw signature if it exists
+            const saved = localStorage.getItem('kompassChecklist');
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.signature) {
+                    const img = new Image();
+                    img.onload = function() {
+                        ctx.drawImage(img, 0, 0);
+                    };
+                    img.src = data.signature;
+                }
+            }
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Drawing functions
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches ? e.touches[0] : e;
+            lastX = touch.clientX - rect.left;
+            lastY = touch.clientY - rect.top;
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches ? e.touches[0] : e;
+            const currentX = touch.clientX - rect.left;
+            const currentY = touch.clientY - rect.top;
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(currentX, currentY);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+
+            lastX = currentX;
+            lastY = currentY;
+        }
+
+        function stopDrawing() {
+            if (isDrawing) {
+                isDrawing = false;
+                autoSave(); // Save signature when done drawing
+            }
+        }
+
+        // Mouse events
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        // Touch events
+        canvas.addEventListener('touchstart', startDrawing, { passive: false });
+        canvas.addEventListener('touchmove', draw, { passive: false });
+        canvas.addEventListener('touchend', stopDrawing);
+
+        // Clear signature function
+        function clearSignature() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            autoSave();
+        }
+    </script>
+</body>
+</html>
