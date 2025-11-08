@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <title>Kompass Lead Daily Checklist</title>
+    
+    <!-- Include jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -284,6 +288,16 @@
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(86, 171, 47, 0.4);
         }
 
         .btn-secondary {
@@ -734,144 +748,6 @@
             }
         }
 
-        @media (max-width: 768px) {
-            body {
-                padding: 0;
-            }
-
-            .container {
-                border-radius: 0;
-                min-height: 100vh;
-            }
-
-            .header {
-                padding: 20px 15px;
-                border-radius: 0;
-            }
-
-            .header h1 {
-                font-size: 1.4em;
-            }
-
-            .header-info {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .input-group label {
-                font-size: 0.9em;
-            }
-
-            .header-info input {
-                padding: 12px;
-                font-size: 1em;
-                width: 100%;
-            }
-
-            .progress-bar-container {
-                margin-top: 15px;
-            }
-
-            .content {
-                padding: 15px;
-            }
-
-            .section {
-                margin-bottom: 20px;
-            }
-
-            .section-header {
-                padding: 12px 15px;
-                font-size: 1.1em;
-                cursor: pointer;
-                user-select: none;
-            }
-
-            .section-content {
-                padding: 15px;
-            }
-
-            .checklist-item {
-                padding: 12px;
-                margin-bottom: 12px;
-            }
-
-            .item-title {
-                font-size: 1em;
-                margin-bottom: 8px;
-            }
-
-            .item-description {
-                font-size: 0.9em;
-                line-height: 1.6;
-            }
-
-            input[type="checkbox"] {
-                width: 22px;
-                height: 22px;
-                min-width: 22px;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                padding: 14px 20px;
-                font-size: 1.05em;
-            }
-
-            .notes-section {
-                padding: 15px;
-            }
-
-            .notes-section textarea {
-                min-height: 120px;
-                font-size: 1em;
-                padding: 12px;
-            }
-
-            .email-list {
-                padding: 12px;
-            }
-
-            .email-list li {
-                font-size: 0.85em;
-                word-break: break-all;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 1.2em;
-                line-height: 1.3;
-            }
-
-            .header-info input {
-                padding: 10px;
-                font-size: 0.95em;
-            }
-
-            .section-header {
-                font-size: 1em;
-                padding: 10px 12px;
-            }
-
-            .item-title {
-                font-size: 0.95em;
-            }
-
-            .item-description {
-                font-size: 0.85em;
-            }
-
-            .btn {
-                padding: 12px 16px;
-                font-size: 1em;
-            }
-        }
-
         /* Ensure inputs are touch-friendly on mobile */
         @media (hover: none) and (pointer: coarse) {
             input, textarea, button {
@@ -1308,6 +1184,7 @@
 
             <!-- Action Buttons -->
             <div class="button-group">
+                <button class="btn btn-success" onclick="generateEODCoverSheet()">📄 Populate EOD Cover Sheet</button>
                 <button class="btn btn-primary" onclick="saveProgress(event)">Save to Device</button>
                 <button class="btn btn-secondary" onclick="resetChecklist()">Reset Checklist</button>
                 <button class="btn btn-secondary" onclick="window.print()">Print to PDF</button>
@@ -1550,6 +1427,183 @@
         function clearSignature() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             autoSave();
+        }
+
+        // EOD Cover Sheet Generation Function
+        function generateEODCoverSheet() {
+            // Get form data
+            const storeNumber = document.getElementById('storeNumber').value || '';
+            const date = document.getElementById('date').value || '';
+            const leadName = document.getElementById('leadName').value || '';
+            const groceryManager = document.getElementById('groceryManager').value || '';
+            const checkoutManager = document.getElementById('checkoutManager').value || '';
+            const signatureData = canvas.toDataURL();
+
+            // Format date for display
+            let formattedDate = '';
+            if (date) {
+                const dateObj = new Date(date + 'T00:00:00');
+                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                const year = dateObj.getFullYear();
+                formattedDate = `${month}/${day}/${year}`;
+            }
+
+            // Check if required fields are filled
+            if (!storeNumber || !date || !leadName) {
+                alert('Please fill in at least Store Number, Date, and Lead Name before generating the EOD Cover Sheet.');
+                return;
+            }
+
+            // Create PDF using jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'pt',
+                format: 'letter'
+            });
+
+            // Set up page dimensions
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const margin = 40;
+            const contentWidth = pageWidth - (margin * 2);
+
+            // Title
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.text('KOMPASS EOD COVER SHEET', pageWidth / 2, 50, { align: 'center' });
+
+            // Header info box
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            let currentY = 80;
+            
+            // To and CC lines
+            doc.text('To: Fred Meyer PIC who signed you out (typically firstname.lastname@stores.fredmeyer.com) and other managers.', margin, currentY);
+            currentY += 12;
+            doc.text('CC: mashabranner@retailodyssey.com; seth.newman@retailodyssey.com; knix@retailodyssey.com; & your supervisor.', margin, currentY);
+            currentY += 20;
+
+            // Subject line
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`EOD Subject Line: EOD FM${storeNumber} ${formattedDate}`, margin, currentY);
+            currentY += 25;
+
+            // Helper function to draw a table row
+            function drawRow(label, value, y, hasCheckbox = false, checkboxYes = false, checkboxNo = false) {
+                const labelWidth = contentWidth * 0.6;
+                const checkboxWidth = contentWidth * 0.2;
+                
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(10);
+                
+                // Draw cell borders
+                doc.rect(margin, y, labelWidth, 25);
+                
+                // Label
+                doc.text(label, margin + 5, y + 16);
+                
+                if (hasCheckbox) {
+                    // Yes checkbox
+                    doc.rect(margin + labelWidth, y, checkboxWidth, 25);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('Yes', margin + labelWidth + 25, y + 16);
+                    doc.rect(margin + labelWidth + 5, y + 8, 10, 10);
+                    if (checkboxYes) {
+                        doc.text('X', margin + labelWidth + 7, y + 16);
+                    }
+                    
+                    // No checkbox
+                    doc.rect(margin + labelWidth + checkboxWidth, y, checkboxWidth, 25);
+                    doc.text('No', margin + labelWidth + checkboxWidth + 25, y + 16);
+                    doc.rect(margin + labelWidth + checkboxWidth + 5, y + 8, 10, 10);
+                    if (checkboxNo) {
+                        doc.text('X', margin + labelWidth + checkboxWidth + 7, y + 16);
+                    }
+                } else {
+                    // Value field
+                    doc.rect(margin + labelWidth, y, contentWidth - labelWidth, 25);
+                    doc.setFont('helvetica', 'normal');
+                    if (value) {
+                        doc.text(value, margin + labelWidth + 5, y + 16);
+                    }
+                }
+                
+                return y + 25;
+            }
+
+            // Draw form fields
+            currentY = drawRow('Lead Name:', leadName, currentY);
+            currentY = drawRow('Date:', formattedDate, currentY);
+            currentY = drawRow('Store Number:', storeNumber, currentY);
+            currentY = drawRow('Before picture of KOMPASS cart loaded to KOMPASS Maintenance line?', '', currentY, true, false, false);
+            currentY = drawRow("Manager's name you checked in with.", groceryManager, currentY);
+            currentY = drawRow('Did you call the KOMPASS Hotline?', '', currentY, true, false, false);
+            
+            // Multi-line text fields
+            doc.rect(margin, currentY, contentWidth * 0.6, 40);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(9);
+            doc.text('If so, what commodities are involved?', margin + 5, currentY + 12);
+            doc.text('What is the issue?', margin + 5, currentY + 28);
+            doc.rect(margin + contentWidth * 0.6, currentY, contentWidth * 0.4, 40);
+            currentY += 40;
+            
+            // Three-option row
+            const thirdWidth = contentWidth / 3;
+            doc.rect(margin, currentY, contentWidth * 0.6, 25);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text('Was the issue resolved before EOD?', margin + 5, currentY + 16);
+            
+            doc.rect(margin + contentWidth * 0.6, currentY, thirdWidth * 0.4, 25);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Yes', margin + contentWidth * 0.6 + 15, currentY + 16);
+            doc.rect(margin + contentWidth * 0.6 + 5, currentY + 8, 10, 10);
+            
+            doc.rect(margin + contentWidth * 0.6 + thirdWidth * 0.4, currentY, thirdWidth * 0.4, 25);
+            doc.text('No', margin + contentWidth * 0.6 + thirdWidth * 0.4 + 15, currentY + 16);
+            doc.rect(margin + contentWidth * 0.6 + thirdWidth * 0.4 + 5, currentY + 8, 10, 10);
+            
+            doc.rect(margin + contentWidth * 0.6 + thirdWidth * 0.8, currentY, thirdWidth * 0.6, 25);
+            doc.text('N/A', margin + contentWidth * 0.6 + thirdWidth * 0.8 + 15, currentY + 16);
+            doc.rect(margin + contentWidth * 0.6 + thirdWidth * 0.8 + 5, currentY + 8, 10, 10);
+            currentY += 25;
+            
+            // Continue with remaining fields
+            currentY = drawRow('If not, what was the temporary solution?', '', currentY);
+            currentY = drawRow("Manager's name you checked out with.", checkoutManager, currentY);
+            currentY = drawRow('Did all sets get signed out in PROD?', '', currentY, true, false, false);
+            currentY = drawRow('Did all sets get signed out in SI?', '', currentY, true, false, false);
+            currentY = drawRow('Sign out sheet attached to EOD email?', '', currentY, true, false, false);
+            currentY = drawRow('Sign out sheet attached to KOMPASS Maintenance line in PROD?', '', currentY, true, false, false);
+            currentY = drawRow('After picture of KOMPASS cart loaded to KOMPASS Maintenance line?', '', currentY, true, false, false);
+            
+            // Signature field
+            doc.rect(margin, currentY, contentWidth * 0.6, 50);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text('Kompass Lead Signature:', margin + 5, currentY + 16);
+            
+            // Add signature image if present
+            if (signatureData && signatureData !== 'data:,') {
+                try {
+                    doc.addImage(signatureData, 'PNG', margin + 5, currentY + 20, 200, 25);
+                } catch (e) {
+                    console.error('Error adding signature:', e);
+                }
+            }
+            
+            doc.rect(margin + contentWidth * 0.6, currentY, contentWidth * 0.4, 50);
+
+            // Save the PDF
+            const filename = `EOD_FM${storeNumber}_${formattedDate.replace(/\//g, '-')}.pdf`;
+            doc.save(filename);
+            
+            // Show success message
+            alert(`EOD Cover Sheet generated successfully!\n\nFilename: ${filename}\n\nThe PDF has been downloaded to your device.`);
         }
     </script>
 </body>
