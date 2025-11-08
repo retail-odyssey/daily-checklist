@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <title>Kompass Lead Daily Checklist</title>
-    
-    <!-- Include jsPDF for PDF generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
     <style>
         * {
             margin: 0;
@@ -263,6 +259,61 @@
             margin-bottom: 5px;
         }
 
+        .eod-field {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f0f7ff;
+            border-radius: 5px;
+            border-left: 3px solid #2196F3;
+        }
+
+        .eod-field label {
+            display: block;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+
+        .eod-field input[type="text"],
+        .eod-field textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.95em;
+        }
+
+        .eod-field textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .checkbox-option label {
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+        }
+
         .button-group {
             display: flex;
             gap: 10px;
@@ -290,6 +341,15 @@
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
         .btn-success {
             background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
             color: white;
@@ -298,15 +358,6 @@
         .btn-success:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(86, 171, 47, 0.4);
-        }
-
-        .btn-secondary {
-            background: #e0e0e0;
-            color: #333;
-        }
-
-        .btn-secondary:hover {
-            background: #d0d0d0;
         }
 
         .notes-section {
@@ -988,9 +1039,14 @@
                                 <input type="checkbox" onchange="updateProgress()">
                             </div>
                             <div class="item-content">
-                                <div class="item-title">2.3 Maintain Professional Relationships</div>
+                                <div class="item-title">2.3 Check In with PIC and Record Name <span style="color: #f39c12; font-weight: bold;">EOD</span></div>
                                 <div class="item-description">
-                                    Adjust approach for each store, build positive relationships with staff
+                                    Check in with the person in charge (PIC) and record their name
+                                    
+                                    <div class="eod-field">
+                                        <label>Manager's name you checked in with:</label>
+                                        <input type="text" id="eodCheckInManager" placeholder="Enter manager's name">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1002,13 +1058,9 @@
                                 <input type="checkbox" onchange="updateProgress()">
                             </div>
                             <div class="item-content">
-                                <div class="item-title">2.4 Assign Sets Fairly</div>
+                                <div class="item-title">2.4 Maintain Professional Relationships</div>
                                 <div class="item-description">
-                                    <ul>
-                                        <li>Consider experience level, aptitude, and strengths</li>
-                                        <li>Avoid favoritism - don't repeatedly assign difficult sets to same person</li>
-                                        <li>Assign based on ability, not preference</li>
-                                    </ul>
+                                    Adjust approach for each store, build positive relationships with staff
                                 </div>
                             </div>
                         </div>
@@ -1020,12 +1072,12 @@
                                 <input type="checkbox" onchange="updateProgress()">
                             </div>
                             <div class="item-content">
-                                <div class="item-title">2.5 Manage Crew Workflow</div>
+                                <div class="item-title">2.5 Assign Sets Fairly</div>
                                 <div class="item-description">
                                     <ul>
-                                        <li>Limit to 2 people per 12 feet of set</li>
-                                        <li>Track participation: Use 1st page of Kompass Notes</li>
-                                        <li>Have each person/group initial with start and finish times</li>
+                                        <li>Consider experience level, aptitude, and strengths</li>
+                                        <li>Avoid favoritism - don't repeatedly assign difficult sets to same person</li>
+                                        <li>Assign based on ability, not preference</li>
                                     </ul>
                                 </div>
                             </div>
@@ -1038,9 +1090,13 @@
                                 <input type="checkbox" onchange="updateProgress()">
                             </div>
                             <div class="item-content">
-                                <div class="item-title">2.6 Handle Surveys Early</div>
+                                <div class="item-title">2.6 Manage Crew Workflow</div>
                                 <div class="item-description">
-                                    Complete required surveys on the first morning of each store visit
+                                    <ul>
+                                        <li>Limit to 2 people per 12 feet of set</li>
+                                        <li>Track participation: Use 1st page of Kompass Notes</li>
+                                        <li>Have each person/group initial with start and finish times</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -1052,7 +1108,21 @@
                                 <input type="checkbox" onchange="updateProgress()">
                             </div>
                             <div class="item-content">
-                                <div class="item-title">2.7 Take "Before" and "After" Photos in PROD</div>
+                                <div class="item-title">2.7 Handle Surveys Early</div>
+                                <div class="item-description">
+                                    Complete required surveys on the first morning of each store visit
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-13">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">2.8 Take "Before" and "After" Photos in PROD</div>
                                 <div class="item-description">
                                     <strong>Before photos:</strong> Immediately after assigning first sets<br>
                                     <strong>After photos:</strong> Immediately after each set is fully complete:
@@ -1065,13 +1135,13 @@
                         </div>
                     </div>
 
-                    <div class="checklist-item" data-id="item-13">
+                    <div class="checklist-item" data-id="item-14">
                         <div class="item-header">
                             <div class="checkbox-wrapper">
                                 <input type="checkbox" onchange="updateProgress()">
                             </div>
                             <div class="item-content">
-                                <div class="item-title">2.8 "After" Photos with Store Intelligence</div>
+                                <div class="item-title">2.9 "After" Photos with Store Intelligence</div>
                                 <div class="item-description">
                                     After photos - Immediately after each set is fully complete:
                                     <ul>
@@ -1080,6 +1150,74 @@
                                         <li>Ensure all sets completed in PROD are completed in Store Intelligence</li>
                                         <li><strong>This needs to be done prior to your leaving the store</strong></li>
                                     </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-15">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">2.10 Handle Issues and Contact Support if Needed <span style="color: #f39c12; font-weight: bold;">EOD</span></div>
+                                <div class="item-description">
+                                    If problems occur (incorrect planogram, wrong footage, fixture issues, store refusal):
+                                    <ul>
+                                        <li>First contact your supervisor and inform them of the issue</li>
+                                        <li>Get name and title of person refusing the set or details of the issue</li>
+                                        <li>Your supervisor may request you contact Kompass support: <strong>kompass@retailodyssey.com</strong> (CC supervisor)</li>
+                                    </ul>
+                                    
+                                    <div class="eod-field">
+                                        <label>Did you call the KOMPASS Hotline?</label>
+                                        <div class="checkbox-group">
+                                            <div class="checkbox-option">
+                                                <input type="checkbox" id="eodHotlineYes" onchange="toggleHotlineFields(this)">
+                                                <label for="eodHotlineYes">Yes</label>
+                                            </div>
+                                            <div class="checkbox-option">
+                                                <input type="checkbox" id="eodHotlineNo" onchange="toggleHotlineFields(this)">
+                                                <label for="eodHotlineNo">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="hotlineDetails" style="display: none;">
+                                        <div class="eod-field">
+                                            <label>If so, what commodities are involved?</label>
+                                            <input type="text" id="eodCommodities" placeholder="Enter commodities">
+                                        </div>
+
+                                        <div class="eod-field">
+                                            <label>What is the issue?</label>
+                                            <textarea id="eodIssue" placeholder="Describe the issue"></textarea>
+                                        </div>
+
+                                        <div class="eod-field">
+                                            <label>Was the issue resolved before EOD?</label>
+                                            <div class="checkbox-group">
+                                                <div class="checkbox-option">
+                                                    <input type="checkbox" id="eodResolvedYes" onchange="toggleResolutionField(this)">
+                                                    <label for="eodResolvedYes">Yes</label>
+                                                </div>
+                                                <div class="checkbox-option">
+                                                    <input type="checkbox" id="eodResolvedNo" onchange="toggleResolutionField(this)">
+                                                    <label for="eodResolvedNo">No</label>
+                                                </div>
+                                                <div class="checkbox-option">
+                                                    <input type="checkbox" id="eodResolvedNA" onchange="toggleResolutionField(this)">
+                                                    <label for="eodResolvedNA">N/A</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="eod-field" id="tempSolutionField" style="display: none;">
+                                            <label>If not, what was the temporary solution?</label>
+                                            <textarea id="eodTempSolution" placeholder="Describe temporary solution"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1094,32 +1232,166 @@
                     <span class="collapse-icon">▼</span>
                 </div>
                 <div class="section-content">
-                    <div class="checklist-item" data-id="item-14">
+                    <div class="checklist-item" data-id="item-16">
                         <div class="item-header">
                             <div class="checkbox-wrapper">
                                 <input type="checkbox" onchange="updateProgress()">
                             </div>
                             <div class="item-content">
-                                <div class="item-title">3.1 Sign-Off and Documentation</div>
+                                <div class="item-title">3.1 Walk Sets and Complete Sign-Offs <span style="color: #f39c12; font-weight: bold;">EOD</span></div>
                                 <div class="item-description">
                                     <ul>
-                                        <li>Get department lead signatures on sign-off sheets</li>
-                                        <li>Take clear, in-focus photos: Sign-off sheets and Kompass cart after photo in Maintenance Category</li>
-                                        <li>Fill Out the EOD Cover Sheet and Include picture with EOD Email</li>
-                                        <li>Include: Your name, date, store number, check in/out manager names, hotline calls, PROD/SI status, confirming Kompass cart photos, issues and resolutions</li>
+                                        <li>Walk each set with store personnel to verify completion</li>
+                                        <li>Show them where you placed overstock/discontinued items</li>
+                                        <li>Complete and review Kompass Sign-Off sheets with store representative</li>
+                                        <li>Before giving them their copy, take a photo of the sign-off sheet for records</li>
+                                        <li>Leave a signed copy with them</li>
+                                        <li>Ask them to complete Kompass Completion online</li>
+                                        <li>Record the name of the person you checked out with</li>
                                     </ul>
+
+                                    <div class="eod-field">
+                                        <label>Manager's name you checked out with:</label>
+                                        <input type="text" id="eodCheckOutManager" placeholder="Enter manager's name">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="checklist-item" data-id="item-15">
+                    <div class="checklist-item" data-id="item-17">
                         <div class="item-header">
                             <div class="checkbox-wrapper">
                                 <input type="checkbox" onchange="updateProgress()">
                             </div>
                             <div class="item-content">
-                                <div class="item-title">3.2 Final Quality Check</div>
+                                <div class="item-title">3.2 Complete PROD and SI Sign-Offs <span style="color: #f39c12; font-weight: bold;">EOD</span></div>
+                                <div class="item-description">
+                                    Verify all sets are signed off in both systems
+                                    
+                                    <div class="eod-field">
+                                        <label>Did all sets get signed out in PROD?</label>
+                                        <div class="checkbox-group">
+                                            <div class="checkbox-option">
+                                                <input type="checkbox" id="eodProdYes">
+                                                <label for="eodProdYes">Yes</label>
+                                            </div>
+                                            <div class="checkbox-option">
+                                                <input type="checkbox" id="eodProdNo">
+                                                <label for="eodProdNo">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="eod-field">
+                                        <label>Did all sets get signed out in SI?</label>
+                                        <div class="checkbox-group">
+                                            <div class="checkbox-option">
+                                                <input type="checkbox" id="eodSiYes">
+                                                <label for="eodSiYes">Yes</label>
+                                            </div>
+                                            <div class="checkbox-option">
+                                                <input type="checkbox" id="eodSiNo">
+                                                <label for="eodSiNo">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-18">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">3.3 Sign-Off Sheet Documentation <span style="color: #f39c12; font-weight: bold;">EOD</span></div>
+                                <div class="item-description">
+                                    Ensure proper documentation of sign-off sheets
+
+                                    <div class="eod-field">
+                                        <label>Sign out sheet attached to EOD email?</label>
+                                        <div class="checkbox-group">
+                                            <div class="checkbox-option">
+                                                <input type="checkbox" id="eodEmailSheetYes">
+                                                <label for="eodEmailSheetYes">Yes</label>
+                                            </div>
+                                            <div class="checkbox-option">
+                                                <input type="checkbox" id="eodEmailSheetNo">
+                                                <label for="eodEmailSheetNo">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="eod-field">
+                                        <label>Sign out sheet attached to KOMPASS Maintenance line in PROD?</label>
+                                        <div class="checkbox-group">
+                                            <div class="checkbox-option">
+                                                <input type="checkbox" id="eodProdSheetYes">
+                                                <label for="eodProdSheetYes">Yes</label>
+                                            </div>
+                                            <div class="checkbox-option">
+                                                <input type="checkbox" id="eodProdSheetNo">
+                                                <label for="eodProdSheetNo">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-19">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">3.4 Kompass Cart Photos <span style="color: #f39c12; font-weight: bold;">EOD</span></div>
+                                <div class="item-description">
+                                    Take clear, in-focus photos of Kompass cart
+
+                                    <div class="eod-field">
+                                        <label>Before picture of KOMPASS cart loaded to KOMPASS Maintenance line?</label>
+                                        <div class="checkbox-group">
+                                            <div class="checkbox-option">
+                                                <input type="checkbox" id="eodBeforePhotoYes">
+                                                <label for="eodBeforePhotoYes">Yes</label>
+                                            </div>
+                                            <div class="checkbox-option">
+                                                <input type="checkbox" id="eodBeforePhotoNo">
+                                                <label for="eodBeforePhotoNo">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="eod-field">
+                                        <label>After picture of KOMPASS cart loaded to KOMPASS Maintenance line?</label>
+                                        <div class="checkbox-group">
+                                            <div class="checkbox-option">
+                                                <input type="checkbox" id="eodAfterPhotoYes">
+                                                <label for="eodAfterPhotoYes">Yes</label>
+                                            </div>
+                                            <div class="checkbox-option">
+                                                <input type="checkbox" id="eodAfterPhotoNo">
+                                                <label for="eodAfterPhotoNo">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item" data-id="item-20">
+                        <div class="item-header">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" onchange="updateProgress()">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">3.5 Final Quality Check</div>
                                 <div class="item-description">
                                     Verify all pictures are clear, well-lit, in focus, and properly attached
                                 </div>
@@ -1127,13 +1399,13 @@
                         </div>
                     </div>
 
-                    <div class="checklist-item" data-id="item-16">
+                    <div class="checklist-item" data-id="item-21">
                         <div class="item-header">
                             <div class="checkbox-wrapper">
                                 <input type="checkbox" onchange="updateProgress()">
                             </div>
                             <div class="item-content">
-                                <div class="item-title">3.3 Compose the EOD Email</div>
+                                <div class="item-title">3.6 Compose the EOD Email</div>
                                 <div class="item-description">
                                     <ul>
                                         <li><strong>To:</strong> Fred Meyer PIC + store management</li>
@@ -1156,13 +1428,13 @@
                         </div>
                     </div>
 
-                    <div class="checklist-item" data-id="item-17">
+                    <div class="checklist-item" data-id="item-22">
                         <div class="item-header">
                             <div class="checkbox-wrapper">
                                 <input type="checkbox" onchange="updateProgress()">
                             </div>
                             <div class="item-content">
-                                <div class="item-title">3.4 Final Time Requirements</div>
+                                <div class="item-title">3.7 Final Time Requirements</div>
                                 <div class="item-description">
                                     <strong>Ensure that:</strong>
                                     <ul>
@@ -1184,10 +1456,10 @@
 
             <!-- Action Buttons -->
             <div class="button-group">
-                <button class="btn btn-success" onclick="generateEODCoverSheet()">📄 Populate EOD Cover Sheet</button>
+                <button class="btn btn-success" onclick="generateEODCoverSheet()">Generate EOD Cover Sheet</button>
                 <button class="btn btn-primary" onclick="saveProgress(event)">Save to Device</button>
                 <button class="btn btn-secondary" onclick="resetChecklist()">Reset Checklist</button>
-                <button class="btn btn-secondary" onclick="window.print()">Print to PDF</button>
+                <button class="btn btn-secondary" onclick="window.print()">Print Checklist</button>
             </div>
         </div>
     </div>
@@ -1237,6 +1509,49 @@
             autoSave();
         }
 
+        function toggleHotlineFields(checkbox) {
+            const yesBox = document.getElementById('eodHotlineYes');
+            const noBox = document.getElementById('eodHotlineNo');
+            const detailsDiv = document.getElementById('hotlineDetails');
+            
+            // Toggle mutual exclusivity
+            if (checkbox.id === 'eodHotlineYes' && checkbox.checked) {
+                noBox.checked = false;
+                detailsDiv.style.display = 'block';
+            } else if (checkbox.id === 'eodHotlineNo' && checkbox.checked) {
+                yesBox.checked = false;
+                detailsDiv.style.display = 'none';
+            } else if (!yesBox.checked && !noBox.checked) {
+                detailsDiv.style.display = 'none';
+            }
+            
+            autoSave();
+        }
+
+        function toggleResolutionField(checkbox) {
+            const yesBox = document.getElementById('eodResolvedYes');
+            const noBox = document.getElementById('eodResolvedNo');
+            const naBox = document.getElementById('eodResolvedNA');
+            const tempSolutionField = document.getElementById('tempSolutionField');
+            
+            // Toggle mutual exclusivity
+            if (checkbox.id === 'eodResolvedYes' && checkbox.checked) {
+                noBox.checked = false;
+                naBox.checked = false;
+                tempSolutionField.style.display = 'none';
+            } else if (checkbox.id === 'eodResolvedNo' && checkbox.checked) {
+                yesBox.checked = false;
+                naBox.checked = false;
+                tempSolutionField.style.display = 'block';
+            } else if (checkbox.id === 'eodResolvedNA' && checkbox.checked) {
+                yesBox.checked = false;
+                noBox.checked = false;
+                tempSolutionField.style.display = 'none';
+            }
+            
+            autoSave();
+        }
+
         function autoSave() {
             const data = {
                 storeNumber: document.getElementById('storeNumber').value,
@@ -1249,6 +1564,28 @@
                 checkoutManager: document.getElementById('checkoutManager').value,
                 checkoutTime: document.getElementById('checkoutTime').value,
                 signature: canvas.toDataURL(),
+                eodCheckInManager: document.getElementById('eodCheckInManager').value,
+                eodCheckOutManager: document.getElementById('eodCheckOutManager').value,
+                eodHotlineYes: document.getElementById('eodHotlineYes').checked,
+                eodHotlineNo: document.getElementById('eodHotlineNo').checked,
+                eodCommodities: document.getElementById('eodCommodities').value,
+                eodIssue: document.getElementById('eodIssue').value,
+                eodResolvedYes: document.getElementById('eodResolvedYes').checked,
+                eodResolvedNo: document.getElementById('eodResolvedNo').checked,
+                eodResolvedNA: document.getElementById('eodResolvedNA').checked,
+                eodTempSolution: document.getElementById('eodTempSolution').value,
+                eodProdYes: document.getElementById('eodProdYes').checked,
+                eodProdNo: document.getElementById('eodProdNo').checked,
+                eodSiYes: document.getElementById('eodSiYes').checked,
+                eodSiNo: document.getElementById('eodSiNo').checked,
+                eodEmailSheetYes: document.getElementById('eodEmailSheetYes').checked,
+                eodEmailSheetNo: document.getElementById('eodEmailSheetNo').checked,
+                eodProdSheetYes: document.getElementById('eodProdSheetYes').checked,
+                eodProdSheetNo: document.getElementById('eodProdSheetNo').checked,
+                eodBeforePhotoYes: document.getElementById('eodBeforePhotoYes').checked,
+                eodBeforePhotoNo: document.getElementById('eodBeforePhotoNo').checked,
+                eodAfterPhotoYes: document.getElementById('eodAfterPhotoYes').checked,
+                eodAfterPhotoNo: document.getElementById('eodAfterPhotoNo').checked,
                 checkedItems: []
             };
 
@@ -1290,6 +1627,40 @@
                 document.getElementById('notes').value = data.notes || '';
                 document.getElementById('checkoutManager').value = data.checkoutManager || '';
                 document.getElementById('checkoutTime').value = data.checkoutTime || '';
+                
+                // Load EOD fields
+                if (data.eodCheckInManager) document.getElementById('eodCheckInManager').value = data.eodCheckInManager;
+                if (data.eodCheckOutManager) document.getElementById('eodCheckOutManager').value = data.eodCheckOutManager;
+                if (data.eodHotlineYes) document.getElementById('eodHotlineYes').checked = true;
+                if (data.eodHotlineNo) document.getElementById('eodHotlineNo').checked = true;
+                if (data.eodCommodities) document.getElementById('eodCommodities').value = data.eodCommodities;
+                if (data.eodIssue) document.getElementById('eodIssue').value = data.eodIssue;
+                if (data.eodResolvedYes) document.getElementById('eodResolvedYes').checked = true;
+                if (data.eodResolvedNo) document.getElementById('eodResolvedNo').checked = true;
+                if (data.eodResolvedNA) document.getElementById('eodResolvedNA').checked = true;
+                if (data.eodTempSolution) document.getElementById('eodTempSolution').value = data.eodTempSolution;
+                if (data.eodProdYes) document.getElementById('eodProdYes').checked = true;
+                if (data.eodProdNo) document.getElementById('eodProdNo').checked = true;
+                if (data.eodSiYes) document.getElementById('eodSiYes').checked = true;
+                if (data.eodSiNo) document.getElementById('eodSiNo').checked = true;
+                if (data.eodEmailSheetYes) document.getElementById('eodEmailSheetYes').checked = true;
+                if (data.eodEmailSheetNo) document.getElementById('eodEmailSheetNo').checked = true;
+                if (data.eodProdSheetYes) document.getElementById('eodProdSheetYes').checked = true;
+                if (data.eodProdSheetNo) document.getElementById('eodProdSheetNo').checked = true;
+                if (data.eodBeforePhotoYes) document.getElementById('eodBeforePhotoYes').checked = true;
+                if (data.eodBeforePhotoNo) document.getElementById('eodBeforePhotoNo').checked = true;
+                if (data.eodAfterPhotoYes) document.getElementById('eodAfterPhotoYes').checked = true;
+                if (data.eodAfterPhotoNo) document.getElementById('eodAfterPhotoNo').checked = true;
+
+                // Show hotline details if yes is checked
+                if (data.eodHotlineYes) {
+                    document.getElementById('hotlineDetails').style.display = 'block';
+                }
+                
+                // Show temp solution field if issue not resolved
+                if (data.eodResolvedNo) {
+                    document.getElementById('tempSolutionField').style.display = 'block';
+                }
 
                 // Restore signature
                 if (data.signature) {
@@ -1326,6 +1697,30 @@
                 document.getElementById('checkoutManager').value = '';
                 document.getElementById('checkoutTime').value = '';
                 
+                // Reset EOD fields
+                document.getElementById('eodCheckInManager').value = '';
+                document.getElementById('eodCheckOutManager').value = '';
+                document.getElementById('eodHotlineYes').checked = false;
+                document.getElementById('eodHotlineNo').checked = false;
+                document.getElementById('eodCommodities').value = '';
+                document.getElementById('eodIssue').value = '';
+                document.getElementById('eodResolvedYes').checked = false;
+                document.getElementById('eodResolvedNo').checked = false;
+                document.getElementById('eodResolvedNA').checked = false;
+                document.getElementById('eodTempSolution').value = '';
+                document.getElementById('eodProdYes').checked = false;
+                document.getElementById('eodProdNo').checked = false;
+                document.getElementById('eodSiYes').checked = false;
+                document.getElementById('eodSiNo').checked = false;
+                document.getElementById('eodEmailSheetYes').checked = false;
+                document.getElementById('eodEmailSheetNo').checked = false;
+                document.getElementById('eodProdSheetYes').checked = false;
+                document.getElementById('eodProdSheetNo').checked = false;
+                document.getElementById('eodBeforePhotoYes').checked = false;
+                document.getElementById('eodBeforePhotoNo').checked = false;
+                document.getElementById('eodAfterPhotoYes').checked = false;
+                document.getElementById('eodAfterPhotoNo').checked = false;
+                
                 // Clear signature
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
@@ -1338,10 +1733,123 @@
             }
         }
 
+        function generateEODCoverSheet() {
+            // Collect all the data
+            const leadName = document.getElementById('leadName').value || '[Not Provided]';
+            const date = document.getElementById('date').value || '[Not Provided]';
+            const storeNumber = document.getElementById('storeNumber').value || '[Not Provided]';
+            
+            // Use EOD-specific fields, fall back to header fields
+            const checkInManager = document.getElementById('eodCheckInManager').value || 
+                                  document.getElementById('groceryManager').value || '[Not Provided]';
+            const checkOutManager = document.getElementById('eodCheckOutManager').value || 
+                                   document.getElementById('checkoutManager').value || '[Not Provided]';
+            
+            const hotlineYes = document.getElementById('eodHotlineYes').checked;
+            const hotlineNo = document.getElementById('eodHotlineNo').checked;
+            const commodities = document.getElementById('eodCommodities').value || '[Not Provided]';
+            const issue = document.getElementById('eodIssue').value || '[Not Provided]';
+            const resolvedYes = document.getElementById('eodResolvedYes').checked;
+            const resolvedNo = document.getElementById('eodResolvedNo').checked;
+            const resolvedNA = document.getElementById('eodResolvedNA').checked;
+            const tempSolution = document.getElementById('eodTempSolution').value || '[Not Provided]';
+            
+            const prodYes = document.getElementById('eodProdYes').checked;
+            const prodNo = document.getElementById('eodProdNo').checked;
+            const siYes = document.getElementById('eodSiYes').checked;
+            const siNo = document.getElementById('eodSiNo').checked;
+            const emailSheetYes = document.getElementById('eodEmailSheetYes').checked;
+            const emailSheetNo = document.getElementById('eodEmailSheetNo').checked;
+            const prodSheetYes = document.getElementById('eodProdSheetYes').checked;
+            const prodSheetNo = document.getElementById('eodProdSheetNo').checked;
+            const beforePhotoYes = document.getElementById('eodBeforePhotoYes').checked;
+            const beforePhotoNo = document.getElementById('eodBeforePhotoNo').checked;
+            const afterPhotoYes = document.getElementById('eodAfterPhotoYes').checked;
+            const afterPhotoNo = document.getElementById('eodAfterPhotoNo').checked;
+
+            // Create the EOD Cover Sheet content
+            let eodContent = `KOMPASS EOD COVER SHEET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Lead Name: ${leadName}
+Date: ${date}
+Store Number: ${storeNumber}
+
+Before picture of KOMPASS cart loaded to KOMPASS Maintenance line? ${beforePhotoYes ? '☑' : '☐'} Yes ${beforePhotoNo ? '☑' : '☐'} No
+
+Manager's name you checked in with: ${checkInManager}
+
+Did you call the KOMPASS Hotline? ${hotlineYes ? '☑' : '☐'} Yes ${hotlineNo ? '☑' : '☐'} No
+
+If so, what commodities are involved?
+${hotlineYes ? commodities : 'N/A'}
+
+What is the issue?
+${hotlineYes ? issue : 'N/A'}
+
+Was the issue resolved before EOD? ${resolvedYes ? '☑' : '☐'} Yes ${resolvedNo ? '☑' : '☐'} No ${resolvedNA ? '☑' : '☐'} N/A
+
+If not, what was the temporary solution?
+${resolvedNo ? tempSolution : 'N/A'}
+
+Manager's name you checked out with: ${checkOutManager}
+
+Did all sets get signed out in PROD? ${prodYes ? '☑' : '☐'} Yes ${prodNo ? '☑' : '☐'} No
+
+Did all sets get signed out in SI? ${siYes ? '☑' : '☐'} Yes ${siNo ? '☑' : '☐'} No
+
+Sign out sheet attached to EOD email? ${emailSheetYes ? '☑' : '☐'} Yes ${emailSheetNo ? '☑' : '☐'} No
+
+Sign out sheet attached to KOMPASS Maintenance line in PROD? ${prodSheetYes ? '☑' : '☐'} Yes ${prodSheetNo ? '☑' : '☐'} No
+
+After picture of KOMPASS cart loaded to KOMPASS Maintenance line? ${afterPhotoYes ? '☑' : '☐'} Yes ${afterPhotoNo ? '☑' : '☐'} No
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EOD Subject Line: EOD FM${storeNumber} ${formatDateForSubject(date)}
+
+To: Fred Meyer PIC who signed you out (typically firstname.lastname@stores.fredmeyer.com) and other managers.
+
+CC: mashabranner@retailodyssey.com; seth.newman@retailodyssey.com; knix@retailodyssey.com; & your supervisor.`;
+
+            // Download the EOD Cover Sheet
+            const blob = new Blob([eodContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `EOD_FM${storeNumber}_${date}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            // Show success message
+            alert('EOD Cover Sheet generated and downloaded successfully!\n\nPlease review the file and attach it to your EOD email along with sign-off sheets and photos.');
+        }
+
+        function formatDateForSubject(dateStr) {
+            if (!dateStr) return '[Date]';
+            const date = new Date(dateStr);
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${month}/${day}/${year}`;
+        }
+
         // Auto-save form fields
-        document.querySelectorAll('#storeNumber, #date, #leadName, #arrivedTime, #groceryManager, #crewArrival, #notes, #checkoutManager, #checkoutTime').forEach(input => {
-            input.addEventListener('change', autoSave);
-            input.addEventListener('blur', autoSave);
+        const formFields = [
+            'storeNumber', 'date', 'leadName', 'arrivedTime', 'groceryManager', 
+            'crewArrival', 'notes', 'checkoutManager', 'checkoutTime',
+            'eodCheckInManager', 'eodCheckOutManager', 'eodCommodities', 
+            'eodIssue', 'eodTempSolution'
+        ];
+        
+        formFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('change', autoSave);
+                field.addEventListener('blur', autoSave);
+            }
         });
 
         // Signature Pad functionality
@@ -1427,183 +1935,6 @@
         function clearSignature() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             autoSave();
-        }
-
-        // EOD Cover Sheet Generation Function
-        function generateEODCoverSheet() {
-            // Get form data
-            const storeNumber = document.getElementById('storeNumber').value || '';
-            const date = document.getElementById('date').value || '';
-            const leadName = document.getElementById('leadName').value || '';
-            const groceryManager = document.getElementById('groceryManager').value || '';
-            const checkoutManager = document.getElementById('checkoutManager').value || '';
-            const signatureData = canvas.toDataURL();
-
-            // Format date for display
-            let formattedDate = '';
-            if (date) {
-                const dateObj = new Date(date + 'T00:00:00');
-                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-                const day = String(dateObj.getDate()).padStart(2, '0');
-                const year = dateObj.getFullYear();
-                formattedDate = `${month}/${day}/${year}`;
-            }
-
-            // Check if required fields are filled
-            if (!storeNumber || !date || !leadName) {
-                alert('Please fill in at least Store Number, Date, and Lead Name before generating the EOD Cover Sheet.');
-                return;
-            }
-
-            // Create PDF using jsPDF
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'pt',
-                format: 'letter'
-            });
-
-            // Set up page dimensions
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
-            const margin = 40;
-            const contentWidth = pageWidth - (margin * 2);
-
-            // Title
-            doc.setFontSize(18);
-            doc.setFont('helvetica', 'bold');
-            doc.text('KOMPASS EOD COVER SHEET', pageWidth / 2, 50, { align: 'center' });
-
-            // Header info box
-            doc.setFontSize(9);
-            doc.setFont('helvetica', 'normal');
-            let currentY = 80;
-            
-            // To and CC lines
-            doc.text('To: Fred Meyer PIC who signed you out (typically firstname.lastname@stores.fredmeyer.com) and other managers.', margin, currentY);
-            currentY += 12;
-            doc.text('CC: mashabranner@retailodyssey.com; seth.newman@retailodyssey.com; knix@retailodyssey.com; & your supervisor.', margin, currentY);
-            currentY += 20;
-
-            // Subject line
-            doc.setFontSize(10);
-            doc.setFont('helvetica', 'bold');
-            doc.text(`EOD Subject Line: EOD FM${storeNumber} ${formattedDate}`, margin, currentY);
-            currentY += 25;
-
-            // Helper function to draw a table row
-            function drawRow(label, value, y, hasCheckbox = false, checkboxYes = false, checkboxNo = false) {
-                const labelWidth = contentWidth * 0.6;
-                const checkboxWidth = contentWidth * 0.2;
-                
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(10);
-                
-                // Draw cell borders
-                doc.rect(margin, y, labelWidth, 25);
-                
-                // Label
-                doc.text(label, margin + 5, y + 16);
-                
-                if (hasCheckbox) {
-                    // Yes checkbox
-                    doc.rect(margin + labelWidth, y, checkboxWidth, 25);
-                    doc.setFont('helvetica', 'normal');
-                    doc.text('Yes', margin + labelWidth + 25, y + 16);
-                    doc.rect(margin + labelWidth + 5, y + 8, 10, 10);
-                    if (checkboxYes) {
-                        doc.text('X', margin + labelWidth + 7, y + 16);
-                    }
-                    
-                    // No checkbox
-                    doc.rect(margin + labelWidth + checkboxWidth, y, checkboxWidth, 25);
-                    doc.text('No', margin + labelWidth + checkboxWidth + 25, y + 16);
-                    doc.rect(margin + labelWidth + checkboxWidth + 5, y + 8, 10, 10);
-                    if (checkboxNo) {
-                        doc.text('X', margin + labelWidth + checkboxWidth + 7, y + 16);
-                    }
-                } else {
-                    // Value field
-                    doc.rect(margin + labelWidth, y, contentWidth - labelWidth, 25);
-                    doc.setFont('helvetica', 'normal');
-                    if (value) {
-                        doc.text(value, margin + labelWidth + 5, y + 16);
-                    }
-                }
-                
-                return y + 25;
-            }
-
-            // Draw form fields
-            currentY = drawRow('Lead Name:', leadName, currentY);
-            currentY = drawRow('Date:', formattedDate, currentY);
-            currentY = drawRow('Store Number:', storeNumber, currentY);
-            currentY = drawRow('Before picture of KOMPASS cart loaded to KOMPASS Maintenance line?', '', currentY, true, false, false);
-            currentY = drawRow("Manager's name you checked in with.", groceryManager, currentY);
-            currentY = drawRow('Did you call the KOMPASS Hotline?', '', currentY, true, false, false);
-            
-            // Multi-line text fields
-            doc.rect(margin, currentY, contentWidth * 0.6, 40);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(9);
-            doc.text('If so, what commodities are involved?', margin + 5, currentY + 12);
-            doc.text('What is the issue?', margin + 5, currentY + 28);
-            doc.rect(margin + contentWidth * 0.6, currentY, contentWidth * 0.4, 40);
-            currentY += 40;
-            
-            // Three-option row
-            const thirdWidth = contentWidth / 3;
-            doc.rect(margin, currentY, contentWidth * 0.6, 25);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(10);
-            doc.text('Was the issue resolved before EOD?', margin + 5, currentY + 16);
-            
-            doc.rect(margin + contentWidth * 0.6, currentY, thirdWidth * 0.4, 25);
-            doc.setFont('helvetica', 'normal');
-            doc.text('Yes', margin + contentWidth * 0.6 + 15, currentY + 16);
-            doc.rect(margin + contentWidth * 0.6 + 5, currentY + 8, 10, 10);
-            
-            doc.rect(margin + contentWidth * 0.6 + thirdWidth * 0.4, currentY, thirdWidth * 0.4, 25);
-            doc.text('No', margin + contentWidth * 0.6 + thirdWidth * 0.4 + 15, currentY + 16);
-            doc.rect(margin + contentWidth * 0.6 + thirdWidth * 0.4 + 5, currentY + 8, 10, 10);
-            
-            doc.rect(margin + contentWidth * 0.6 + thirdWidth * 0.8, currentY, thirdWidth * 0.6, 25);
-            doc.text('N/A', margin + contentWidth * 0.6 + thirdWidth * 0.8 + 15, currentY + 16);
-            doc.rect(margin + contentWidth * 0.6 + thirdWidth * 0.8 + 5, currentY + 8, 10, 10);
-            currentY += 25;
-            
-            // Continue with remaining fields
-            currentY = drawRow('If not, what was the temporary solution?', '', currentY);
-            currentY = drawRow("Manager's name you checked out with.", checkoutManager, currentY);
-            currentY = drawRow('Did all sets get signed out in PROD?', '', currentY, true, false, false);
-            currentY = drawRow('Did all sets get signed out in SI?', '', currentY, true, false, false);
-            currentY = drawRow('Sign out sheet attached to EOD email?', '', currentY, true, false, false);
-            currentY = drawRow('Sign out sheet attached to KOMPASS Maintenance line in PROD?', '', currentY, true, false, false);
-            currentY = drawRow('After picture of KOMPASS cart loaded to KOMPASS Maintenance line?', '', currentY, true, false, false);
-            
-            // Signature field
-            doc.rect(margin, currentY, contentWidth * 0.6, 50);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(10);
-            doc.text('Kompass Lead Signature:', margin + 5, currentY + 16);
-            
-            // Add signature image if present
-            if (signatureData && signatureData !== 'data:,') {
-                try {
-                    doc.addImage(signatureData, 'PNG', margin + 5, currentY + 20, 200, 25);
-                } catch (e) {
-                    console.error('Error adding signature:', e);
-                }
-            }
-            
-            doc.rect(margin + contentWidth * 0.6, currentY, contentWidth * 0.4, 50);
-
-            // Save the PDF
-            const filename = `EOD_FM${storeNumber}_${formattedDate.replace(/\//g, '-')}.pdf`;
-            doc.save(filename);
-            
-            // Show success message
-            alert(`EOD Cover Sheet generated successfully!\n\nFilename: ${filename}\n\nThe PDF has been downloaded to your device.`);
         }
     </script>
 </body>
