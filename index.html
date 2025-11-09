@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <title>Kompass Lead Daily Checklist</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -1265,7 +1266,7 @@
                                 <input type="checkbox" onchange="updateProgress()">
                             </div>
                             <div class="item-content">
-                                <div class="item-title">3.2 Complete PROD and SI Sign-Offs <span style="color: #f39c12; font-weight: bold;">EOD</span></div>
+                                <div class="item-title">3.2 Complete PROD and SI <span style="color: #f39c12; font-weight: bold;">EOD</span></div>
                                 <div class="item-description">
                                     Verify all sets are signed off in both systems
                                     
@@ -1767,64 +1768,151 @@
             const afterPhotoYes = document.getElementById('eodAfterPhotoYes').checked;
             const afterPhotoNo = document.getElementById('eodAfterPhotoNo').checked;
 
-            // Create the EOD Cover Sheet content
-            let eodContent = `KOMPASS EOD COVER SHEET
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Lead Name: ${leadName}
-Date: ${date}
-Store Number: ${storeNumber}
-
-Before picture of KOMPASS cart loaded to KOMPASS Maintenance line? ${beforePhotoYes ? '☑' : '☐'} Yes ${beforePhotoNo ? '☑' : '☐'} No
-
-Manager's name you checked in with: ${checkInManager}
-
-Did you call the KOMPASS Hotline? ${hotlineYes ? '☑' : '☐'} Yes ${hotlineNo ? '☑' : '☐'} No
-
-If so, what commodities are involved?
-${hotlineYes ? commodities : 'N/A'}
-
-What is the issue?
-${hotlineYes ? issue : 'N/A'}
-
-Was the issue resolved before EOD? ${resolvedYes ? '☑' : '☐'} Yes ${resolvedNo ? '☑' : '☐'} No ${resolvedNA ? '☑' : '☐'} N/A
-
-If not, what was the temporary solution?
-${resolvedNo ? tempSolution : 'N/A'}
-
-Manager's name you checked out with: ${checkOutManager}
-
-Did all sets get signed out in PROD? ${prodYes ? '☑' : '☐'} Yes ${prodNo ? '☑' : '☐'} No
-
-Did all sets get signed out in SI? ${siYes ? '☑' : '☐'} Yes ${siNo ? '☑' : '☐'} No
-
-Sign out sheet attached to EOD email? ${emailSheetYes ? '☑' : '☐'} Yes ${emailSheetNo ? '☑' : '☐'} No
-
-Sign out sheet attached to KOMPASS Maintenance line in PROD? ${prodSheetYes ? '☑' : '☐'} Yes ${prodSheetNo ? '☑' : '☐'} No
-
-After picture of KOMPASS cart loaded to KOMPASS Maintenance line? ${afterPhotoYes ? '☑' : '☐'} Yes ${afterPhotoNo ? '☑' : '☐'} No
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-EOD Subject Line: EOD FM${storeNumber} ${formatDateForSubject(date)}
-
-To: Fred Meyer PIC who signed you out (typically firstname.lastname@stores.fredmeyer.com) and other managers.
-
-CC: mashabranner@retailodyssey.com; seth.newman@retailodyssey.com; knix@retailodyssey.com; & your supervisor.`;
-
-            // Download the EOD Cover Sheet
-            const blob = new Blob([eodContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `EOD_FM${storeNumber}_${date}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
+            // Create PDF using jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            let yPos = 20;
+            const leftMargin = 20;
+            const lineHeight = 7;
+            
+            // Helper function to add text with word wrap
+            function addText(text, x, y, maxWidth = 170, bold = false) {
+                if (bold) {
+                    doc.setFont('helvetica', 'bold');
+                } else {
+                    doc.setFont('helvetica', 'normal');
+                }
+                const lines = doc.splitTextToSize(text, maxWidth);
+                doc.text(lines, x, y);
+                return y + (lines.length * lineHeight);
+            }
+            
+            // Helper function to add checkbox
+            function addCheckbox(label, checked, x, y) {
+                doc.setFont('helvetica', 'normal');
+                doc.text(checked ? '☑' : '☐', x, y);
+                doc.text(label, x + 5, y);
+            }
+            
+            // Title
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.text('KOMPASS EOD COVER SHEET', 105, yPos, { align: 'center' });
+            yPos += 15;
+            
+            // Header info
+            doc.setFontSize(11);
+            yPos = addText(`Lead Name: ${leadName}`, leftMargin, yPos);
+            yPos = addText(`Date: ${date}`, leftMargin, yPos);
+            yPos = addText(`Store Number: ${storeNumber}`, leftMargin, yPos);
+            yPos += 5;
+            
+            // Before picture
+            doc.setFont('helvetica', 'bold');
+            doc.text('Before picture of KOMPASS cart loaded to KOMPASS Maintenance line?', leftMargin, yPos);
+            yPos += lineHeight;
+            addCheckbox('Yes', beforePhotoYes, leftMargin + 10, yPos);
+            addCheckbox('No', beforePhotoNo, leftMargin + 30, yPos);
+            yPos += 10;
+            
+            // Manager checked in with
+            yPos = addText(`Manager's name you checked in with: ${checkInManager}`, leftMargin, yPos);
+            yPos += 5;
+            
+            // Hotline
+            doc.setFont('helvetica', 'bold');
+            doc.text('Did you call the KOMPASS Hotline?', leftMargin, yPos);
+            yPos += lineHeight;
+            addCheckbox('Yes', hotlineYes, leftMargin + 10, yPos);
+            addCheckbox('No', hotlineNo, leftMargin + 30, yPos);
+            yPos += 10;
+            
+            // Commodities
+            yPos = addText('If so, what commodities are involved?', leftMargin, yPos, 170, true);
+            yPos = addText(hotlineYes ? commodities : 'N/A', leftMargin + 5, yPos);
+            yPos += 5;
+            
+            // Issue
+            yPos = addText('What is the issue?', leftMargin, yPos, 170, true);
+            yPos = addText(hotlineYes ? issue : 'N/A', leftMargin + 5, yPos);
+            yPos += 5;
+            
+            // Resolved
+            doc.setFont('helvetica', 'bold');
+            doc.text('Was the issue resolved before EOD?', leftMargin, yPos);
+            yPos += lineHeight;
+            addCheckbox('Yes', resolvedYes, leftMargin + 10, yPos);
+            addCheckbox('No', resolvedNo, leftMargin + 30, yPos);
+            addCheckbox('N/A', resolvedNA, leftMargin + 50, yPos);
+            yPos += 10;
+            
+            // Temp solution
+            yPos = addText('If not, what was the temporary solution?', leftMargin, yPos, 170, true);
+            yPos = addText(resolvedNo ? tempSolution : 'N/A', leftMargin + 5, yPos);
+            yPos += 5;
+            
+            // Manager checked out with
+            yPos = addText(`Manager's name you checked out with: ${checkOutManager}`, leftMargin, yPos);
+            yPos += 5;
+            
+            // PROD signout
+            doc.setFont('helvetica', 'bold');
+            doc.text('Did all sets get signed out in PROD?', leftMargin, yPos);
+            yPos += lineHeight;
+            addCheckbox('Yes', prodYes, leftMargin + 10, yPos);
+            addCheckbox('No', prodNo, leftMargin + 30, yPos);
+            yPos += 10;
+            
+            // SI signout
+            doc.setFont('helvetica', 'bold');
+            doc.text('Did all sets get signed out in SI?', leftMargin, yPos);
+            yPos += lineHeight;
+            addCheckbox('Yes', siYes, leftMargin + 10, yPos);
+            addCheckbox('No', siNo, leftMargin + 30, yPos);
+            yPos += 10;
+            
+            // Email sheet
+            doc.setFont('helvetica', 'bold');
+            doc.text('Sign out sheet attached to EOD email?', leftMargin, yPos);
+            yPos += lineHeight;
+            addCheckbox('Yes', emailSheetYes, leftMargin + 10, yPos);
+            addCheckbox('No', emailSheetNo, leftMargin + 30, yPos);
+            yPos += 10;
+            
+            // PROD sheet
+            doc.setFont('helvetica', 'bold');
+            doc.text('Sign out sheet attached to KOMPASS Maintenance line in PROD?', leftMargin, yPos);
+            yPos += lineHeight;
+            addCheckbox('Yes', prodSheetYes, leftMargin + 10, yPos);
+            addCheckbox('No', prodSheetNo, leftMargin + 30, yPos);
+            yPos += 10;
+            
+            // After picture
+            doc.setFont('helvetica', 'bold');
+            doc.text('After picture of KOMPASS cart loaded to KOMPASS Maintenance line?', leftMargin, yPos);
+            yPos += lineHeight;
+            addCheckbox('Yes', afterPhotoYes, leftMargin + 10, yPos);
+            addCheckbox('No', afterPhotoNo, leftMargin + 30, yPos);
+            yPos += 15;
+            
+            // Footer section
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            yPos = addText(`EOD Subject Line: EOD FM${storeNumber} ${formatDateForSubject(date)}`, leftMargin, yPos);
+            yPos += 5;
+            
+            doc.setFont('helvetica', 'normal');
+            yPos = addText('To: Fred Meyer PIC who signed you out (typically firstname.lastname@stores.fredmeyer.com) and other managers.', leftMargin, yPos);
+            yPos += 5;
+            
+            yPos = addText('CC: mashabranner@retailodyssey.com; seth.newman@retailodyssey.com; knix@retailodyssey.com; & your supervisor.', leftMargin, yPos);
+            
+            // Save the PDF
+            doc.save(`EOD_FM${storeNumber}_${date}.pdf`);
+            
             // Show success message
-            alert('EOD Cover Sheet generated and downloaded successfully!\n\nPlease review the file and attach it to your EOD email along with sign-off sheets and photos.');
+            alert('EOD Cover Sheet PDF generated and downloaded successfully!\n\nPlease review the file and attach it to your EOD email along with sign-off sheets and photos.');
         }
 
         function formatDateForSubject(dateStr) {
